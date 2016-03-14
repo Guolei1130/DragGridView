@@ -1,9 +1,9 @@
 # DragGridView
 拖拽排序GridView,支持本地记录,对代码进行了封装，可直接使用。
 
-## 稍后会对GrapGridView进行再次修改
-## 稍后会对GrapGridView进行再次修改
-## 稍后会对GrapGridView进行再次修改
+## 稍后会对DragGridView进行再次修改
+## 稍后会对DragGridView进行再次修改
+## 稍后会对DragGridView进行再次修改
 
 
 ps:对 http://blog.csdn.net/vipzjyno1/article/details/25005851　
