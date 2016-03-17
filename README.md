@@ -41,7 +41,7 @@ ps:对 http://blog.csdn.net/vipzjyno1/article/details/25005851　
 
  
 # 1.1.0 版本　还会在当前版本上进行优化
-　###  - 加入粒子炸裂删除效果
-　###  - 用法
-　      -　只需注意将DragGridView中mHorizontalSpacing　和mVerticalSpacing　设置为和部居中　horizontalSpacing　和　verticalSpacing　设为一样的值即可
+  - 加入粒子炸裂删除效果
+  - 用法
+   - 只需注意将DragGridView中mHorizontalSpacing和mVerticalSpacing设置为和布局horizontalSpacing和verticalSpacing设为一样的值即可
 　
