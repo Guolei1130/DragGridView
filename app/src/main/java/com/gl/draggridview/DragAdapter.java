@@ -131,7 +131,8 @@ public class DragAdapter extends BaseDragAdapter {
     @Override
     public void removeItem(BaseItem item) {
         if (provinceList.contains((ProvinceItem)item)){
-            provinceList.remove((ProvinceItem)item);
+            provinceList.remove((ProvinceItem) item);
+
             notifyDataSetChanged();
         }
     }
@@ -140,6 +141,8 @@ public class DragAdapter extends BaseDragAdapter {
     public void removePosition(int position) {
         if (position >=0 && position<provinceList.size()){
             provinceList.remove(position);
+            mEditor.putString(Constant.PROVINCE, ListToJson.toJson(provinceList).toString());
+            mEditor.commit();
             notifyDataSetChanged();
         }
     }

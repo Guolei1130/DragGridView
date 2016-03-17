@@ -3,9 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <com.gl.draggridview.DragGridView
+        android:layout_marginTop="14dip"
         android:id="@+id/userGridView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -18,4 +20,14 @@
         android:scrollbars="vertical"
         android:stretchMode="columnWidth"
         android:verticalSpacing="14.0px" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="单击删除，长按拖动排序"
+        android:textColor="#333333"
+        android:textSize="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal"
+        />
 </LinearLayout>

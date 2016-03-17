@@ -47,8 +47,9 @@ public class MainActivity extends Activity {
         }else {
             model.getProvinceListFromCache();
             items = model.list;
-            Log.e("tag","error");
+
         }
+//        initData();
         initView();
     }
 

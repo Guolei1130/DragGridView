@@ -1,5 +1,6 @@
 package com.gl.draggridview;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
@@ -18,6 +19,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gl.ExplosionField.ExplosionField;
 import com.gl.base.BaseDragAdapter;
 import com.gl.tools.Util;
 
@@ -25,6 +27,9 @@ import com.gl.tools.Util;
  * Created by GeekZoo on 2016/3/10.
  */
 public class DragGridView extends GridView {
+
+    private ExplosionField mExplosionField;
+
     /**
      * 点击时X/Y位置
      **/
@@ -79,8 +84,8 @@ public class DragGridView extends GridView {
     private double dragScale = 1.2D;
     private Vibrator mVibrator;
 
-    private int mHorizontalSpacing = 0;
-    private int mVerticalSpacing = 0;
+    private int mHorizontalSpacing = 14;
+    private int mVerticalSpacing = 14;
     /**
      * 移动的时候最后动画的ID
      **/
@@ -105,6 +110,8 @@ public class DragGridView extends GridView {
     private void init(Context context) {
         mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         mHorizontalSpacing = Util.dip2px(context, mHorizontalSpacing);
+
+        mExplosionField = ExplosionField.attach2Window((Activity) context);
     }
 
     @Override
@@ -238,6 +245,89 @@ public class DragGridView extends GridView {
                 return false;
             }
         });
+
+        setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.e("tag", "this is position->" + position);
+                ViewGroup dragViewGroup = (ViewGroup) getChildAt(position - getFirstVisiblePosition());
+                TextView dragTextView = (TextView) dragViewGroup.findViewById(R.id.text_item);
+//                dragTextView.setSelected(true);
+//                dragTextView.setEnabled(false);
+                itemHeight = dragViewGroup.getHeight();
+                itemWidth = dragViewGroup.getWidth();
+                ViewGroup item = (ViewGroup) getChildAt(position);
+                item.setVisibility(View.INVISIBLE);
+                final int last = getAdapter().getCount()-1;
+                final int position_li = position;
+                mExplosionField.explode(dragViewGroup);
+                mExplosionField.setFinishLIstener(new ExplosionField.OnFinshListener() {
+                    @Override
+                    public void finish() {
+                        if (position_li == last) {
+
+                            ((BaseDragAdapter) getAdapter()).removePosition(position_li);
+
+                            return;
+                        }
+                        back(position_li);
+                    }
+                });
+
+            }
+        });
+    }
+
+    private void back(final int position) {
+
+        float to_x = 0, to_y = 0;
+        float x_vlaue = ((float) mHorizontalSpacing / (float) itemWidth) + 1.0f;
+        //y_vlaue移动的距离百分比（相对于自己宽度的百分比）
+        float y_vlaue = ((float) mVerticalSpacing / (float) itemHeight) + 1.0f;
+        Log.e("tag", "这是  啊---》" + x_vlaue + ";" + y_vlaue);
+        int count = getAdapter().getCount();
+        for (int i = position +1 ; i < count ; i++) {
+            if (i  % 4 == 0){
+                //
+                to_x = x_vlaue * 3;
+                to_y = -y_vlaue;
+            }else {
+                to_x = -x_vlaue;
+                to_y = 0;
+            }
+            Log.e("tag","这是移动参数--->"+to_x+";"+to_y);
+            ViewGroup moveViewGroup = (ViewGroup) getChildAt(i);
+            Animation moveAnimation = getMoveAnimation(to_x, to_y);
+            moveViewGroup.startAnimation(moveAnimation);
+            //如果是最后一个移动的，那么设置他的最后个动画ID为LastAnimationID
+            if (holdPosition == endPosition) {
+                LastAnimationID = moveAnimation.toString();
+            }
+            moveAnimation.setAnimationListener(new Animation.AnimationListener() {
+
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    // TODO Auto-generated method stub
+                    isMoving = true;
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    // TODO Auto-generated method stub
+                    if (animation.toString().equalsIgnoreCase(LastAnimationID)) {
+                        BaseDragAdapter mDragAdapter = (BaseDragAdapter) getAdapter();
+                        mDragAdapter.removePosition(position);
+                    }
+                }
+            });
+        }
+
     }
 
     private void onMove(int x, int y) {
