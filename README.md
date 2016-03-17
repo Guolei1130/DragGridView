@@ -3,9 +3,7 @@
 
 
 # 效果图
-
-[效果](https://github.com/Guolei1130/DragGridView/blob/master/DragGridView.gif)
-
+![啦啦啦啦](https://github.com/Guolei1130/DragGridView/blob/master/DragGridView.gif "Optional title")
 
 
 ## 稍后会对DragGridView进行再次修改
