@@ -1,6 +1,11 @@
 # DragGridView
 拖拽排序GridView,支持本地记录,对代码进行了封装，可直接使用。
 
+
+# 效果图  由于是模拟器，效果差了点
+![啦啦啦啦](https://github.com/Guolei1130/DragGridView/blob/master/DragGridView.gif "Optional title")
+
+
 ## 稍后会对DragGridView进行再次修改
 ## 稍后会对DragGridView进行再次修改
 ## 稍后会对DragGridView进行再次修改
