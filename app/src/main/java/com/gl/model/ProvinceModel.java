@@ -2,6 +2,7 @@ package com.gl.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.gl.bean.ProvinceItem;
 import com.gl.tools.Constant;
@@ -49,6 +50,7 @@ public class ProvinceModel {
         try {
             JSONObject jsonObject = new JSONObject(mShared.getString(Constant.PROVINCE,"{}"));
             JSONArray arr = (JSONArray) jsonObject.opt(Constant.PROVINCE_ARR);
+            Log.e("tag",arr.length()+"");
             if (null != arr && arr.length()>0){
                 for (int i = 0; i < arr.length(); i++) {
                     ProvinceItem item = new ProvinceItem();

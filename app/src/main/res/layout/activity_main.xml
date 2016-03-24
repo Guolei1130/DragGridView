@@ -11,18 +11,15 @@
         android:id="@+id/userGridView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="14dip"
-        android:layout_marginRight="14dip"
         android:gravity="center"
-        android:horizontalSpacing="14dip"
         android:listSelector="@android:color/transparent"
         android:numColumns="4"
         android:scrollbars="vertical"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="14.0px" />
+        />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="单击删除，长按拖动排序"
         android:textColor="#333333"

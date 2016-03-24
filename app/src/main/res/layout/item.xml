@@ -1,29 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rl_subscribe"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:minHeight="38.0dip"
-    android:minWidth="72.0dip" >
-
-    <TextView
-        android:id="@+id/text_item"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@drawable/item_bg"
-        android:gravity="center"
-        android:minHeight="38.0dip"
-        android:minWidth="72.0dip"
-        android:textColor="@color/item_text_color"
-        android:textSize="14.0sp" />
-    <!-- android:layout_margin="5dip" -->
-
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:gravity="center_horizontal"
+    android:id="@+id/layout"
+    >
     <ImageView
-        android:id="@+id/icon_new"
+        android:id="@+id/img"
+        android:layout_width="39dp"
+        android:layout_height="39dp"
+        android:src="@mipmap/ic_launcher"
+        android:layout_marginTop="17dp"
+        android:scaleType="fitXY"
+        />
+    <TextView
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/new_img"
-        android:visibility="gone" />
-
-</RelativeLayout>
+        android:includeFontPadding="false"
+        android:layout_marginTop="13dp"
+        android:textSize="14dp"
+        android:layout_marginBottom="17dp"
+        />
+</LinearLayout>

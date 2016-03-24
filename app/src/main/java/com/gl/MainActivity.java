@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.gl.bean.ProvinceItem;
 import com.gl.draggridview.DragAdapter;
+import com.gl.draggridview.DragAdapter.changeListener;
 import com.gl.draggridview.DragGridView;
 import com.gl.draggridview.R;
 import com.gl.model.ProvinceModel;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements changeListener{
 
     private DragGridView gridView;
 
@@ -46,8 +47,10 @@ public class MainActivity extends Activity {
             mEditor.commit();
         }else {
             model.getProvinceListFromCache();
-            items = model.list;
-
+            if (null != model.list && model.list.size()>0){
+                items = model.list;
+            }
+//            initData();
         }
 //        initData();
         initView();
@@ -76,5 +79,16 @@ public class MainActivity extends Activity {
         items.add(new ProvinceItem(15, "香港"));
         items.add(new ProvinceItem(16, "澳门"));
         items.add(new ProvinceItem(17, "四川"));
+    }
+
+    @Override
+    public void exchangeOtherAdapter(List<ProvinceItem> data, int position) {
+        // TODO: 16-3-26 做一些数据联动的工作
+
+    }
+
+    @Override
+    public void setCurrentPosition() {
+        // TODO: 16-3-26 改变当前数据联动的选中项
     }
 }

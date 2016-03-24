@@ -3,6 +3,9 @@ package com.gl.draggridview;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.os.Vibrator;
 import android.util.AttributeSet;
@@ -84,8 +87,8 @@ public class DragGridView extends GridView {
     private double dragScale = 1.2D;
     private Vibrator mVibrator;
 
-    private int mHorizontalSpacing = 14;
-    private int mVerticalSpacing = 14;
+    private int mHorizontalSpacing = 1;
+    private int mVerticalSpacing = 1;
     /**
      * 移动的时候最后动画的ID
      **/
@@ -93,6 +96,7 @@ public class DragGridView extends GridView {
 
     private boolean isMoving = false;
 
+    private int defaultDragBgColor = Color.parseColor("#f5f5f5");
 
     public DragGridView(Context context) {
         this(context, null);
@@ -105,6 +109,25 @@ public class DragGridView extends GridView {
     public DragGridView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
+        View first_view = getChildAt(0);
+        if (null != first_view){
+            int childCount = getChildCount();
+            Paint paint = new Paint();
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth((float) 2.0);
+            paint.setColor(Color.parseColor("#e5e5e5"));
+            for (int i = 0; i < childCount; i++) {
+                // TODO: 16-3-26 draw line
+                View item = getChildAt(i);
+                canvas.drawLine(item.getRight(), item.getTop(), item.getRight(), item.getBottom(), paint);
+                canvas.drawLine(item.getLeft(), item.getBottom(), item.getRight(), item.getBottom(), paint);
+            }
+        }
     }
 
     private void init(Context context) {
@@ -158,6 +181,7 @@ public class DragGridView extends GridView {
                 case MotionEvent.ACTION_UP:
                     stopDrag();
                     onDrop(x, y);
+                    ((BaseDragAdapter)getAdapter()).dragEnd();
                     requestDisallowInterceptTouchEvent(false);
                     break;
                 default:
@@ -186,7 +210,7 @@ public class DragGridView extends GridView {
      */
     private void onDrag(int x, int y, int rawx, int rawy) {
         if (null != dragImageView) {
-            windowParams.alpha = 0.6f;
+            windowParams.alpha = 1.f;
             windowParams.x = rawx - win_view_x;
             windowParams.y = rawy - win_view_y;
             windowManager.updateViewLayout(dragImageView, windowParams);
@@ -211,7 +235,7 @@ public class DragGridView extends GridView {
                     return false;
                 }
                 ViewGroup dragViewGroup = (ViewGroup) getChildAt(dragPosition - getFirstVisiblePosition());
-                TextView dragTextView = (TextView) dragViewGroup.findViewById(R.id.text_item);
+                TextView dragTextView = (TextView) dragViewGroup.findViewById(R.id.title);
                 dragTextView.setSelected(true);
                 dragTextView.setEnabled(false);
                 itemHeight = dragViewGroup.getHeight();
@@ -228,6 +252,7 @@ public class DragGridView extends GridView {
                     dragItemView = dragViewGroup;
                     dragViewGroup.destroyDrawingCache();
                     dragViewGroup.setDrawingCacheEnabled(true);
+                    dragViewGroup.setBackgroundColor(defaultDragBgColor);
                     Bitmap dragBitmap = Bitmap.createBitmap(dragViewGroup.getDrawingCache());
                     mVibrator.vibrate(50);//设置震动时间
                     startDrag(dragBitmap, (int) ev.getRawX(), (int) ev.getRawY());
@@ -251,7 +276,7 @@ public class DragGridView extends GridView {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.e("tag", "this is position->" + position);
                 ViewGroup dragViewGroup = (ViewGroup) getChildAt(position - getFirstVisiblePosition());
-                TextView dragTextView = (TextView) dragViewGroup.findViewById(R.id.text_item);
+                TextView dragTextView = (TextView) dragViewGroup.findViewById(R.id.title);
 //                dragTextView.setSelected(true);
 //                dragTextView.setEnabled(false);
                 itemHeight = dragViewGroup.getHeight();
@@ -460,10 +485,6 @@ public class DragGridView extends GridView {
         windowManager.addView(iv, windowParams);
         dragImageView = iv;
 
-    }
-
-    private void hideDropItem() {
-        ((BaseDragAdapter) getAdapter()).setShowDropItem(false);
     }
 
     @Override
