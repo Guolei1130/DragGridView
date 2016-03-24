@@ -39,3 +39,9 @@ ps:对 http://blog.csdn.net/vipzjyno1/article/details/25005851　
     - 若想修改 item　背景,请修改item_bg.xml
     - 其他　根据需求对代码进行修改
 
+ 
+# 1.1.0 版本　还会在当前版本上进行优化
+  - 加入粒子炸裂删除效果
+  - 用法
+   - 只需注意将DragGridView中mHorizontalSpacing和mVerticalSpacing设置为和布局horizontalSpacing和verticalSpacing设为一样的值即可
+　
