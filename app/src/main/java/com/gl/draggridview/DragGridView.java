@@ -276,9 +276,6 @@ public class DragGridView extends GridView {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.e("tag", "this is position->" + position);
                 ViewGroup dragViewGroup = (ViewGroup) getChildAt(position - getFirstVisiblePosition());
-                TextView dragTextView = (TextView) dragViewGroup.findViewById(R.id.title);
-//                dragTextView.setSelected(true);
-//                dragTextView.setEnabled(false);
                 itemHeight = dragViewGroup.getHeight();
                 itemWidth = dragViewGroup.getWidth();
                 ViewGroup item = (ViewGroup) getChildAt(position);
@@ -470,7 +467,7 @@ public class DragGridView extends GridView {
         windowParams = new WindowManager.LayoutParams();
         windowParams.gravity = Gravity.TOP | Gravity.LEFT;
         windowParams.x = x - win_view_x;
-        windowParams.y = x - win_view_y;
+        windowParams.y = y - win_view_y;
         windowParams.width = (int) (dragScale * dragBitmap.getWidth());// 放大dragScale倍，可以设置拖动后的倍数
         windowParams.height = (int) (dragScale * dragBitmap.getHeight());// 放大dragScale倍，可以设置拖动后的倍数
         this.windowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE

@@ -112,6 +112,7 @@ public class DragAdapter extends BaseDragAdapter {
         if (provinceList.contains((ProvinceItem)item)){
             provinceList.remove((ProvinceItem) item);
             notifyDataSetChanged();
+            dropPosition = -1;
         }
     }
 
