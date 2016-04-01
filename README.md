@@ -5,12 +5,6 @@
 # 效果图  由于是模拟器，效果差了点
 ![啦啦啦啦](https://github.com/Guolei1130/DragGridView/blob/master/DragGridView.gif "Optional title")
 
-
-## 稍后会对DragGridView进行再次修改
-## 稍后会对DragGridView进行再次修改
-## 稍后会对DragGridView进行再次修改
-
-
 ps:对 http://blog.csdn.net/vipzjyno1/article/details/25005851　
 的代码进行了优化和封装，后续还会继续优化和封装。
 
