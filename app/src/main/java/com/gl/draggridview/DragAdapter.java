@@ -3,11 +3,9 @@ package com.gl.draggridview;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gl.base.BaseDragAdapter;
@@ -81,7 +79,32 @@ public class DragAdapter extends BaseDragAdapter {
             view.setBackgroundColor(Color.parseColor("#ffffff"));
             textView.setTextColor(Color.parseColor("#464646"));
         }
+
         return view;
+//        ViewHolder holder ;
+//        if (null == convertView){
+//            convertView = LayoutInflater.from(context).inflate(R.layout.item,parent,false);
+//            holder = new ViewHolder();
+//            holder.textView = (TextView) convertView.findViewById(R.id.title);
+//            convertView.setTag(holder);
+//        }else {
+//            holder = (ViewHolder) convertView.getTag();
+//        }
+//        final ProvinceItem item = provinceList.get(position);
+//        holder.textView.setText(item.getName()+"");
+//        if (dropPosition == position){
+//            convertView.setVisibility(View.INVISIBLE);
+//        }
+//        if (selectItem.getId() == provinceList.get(position).getId()){
+//            convertView.setBackgroundColor(Color.parseColor("#fbfbfb"));
+//            holder.textView.setTextColor(Color.parseColor("#ff604f"));
+//        }else {
+//            convertView.setBackgroundColor(Color.parseColor("#ffffff"));
+//            holder.textView.setTextColor(Color.parseColor("#464646"));
+//        }
+//
+//        Log.e(TAG, "getView: " + position + "dropPosition " + dropPosition + "visiable :"+convertView.getVisibility());
+//        return convertView;
     }
 
     @Override
@@ -111,8 +134,8 @@ public class DragAdapter extends BaseDragAdapter {
     public void removeItem(BaseItem item) {
         if (provinceList.contains((ProvinceItem)item)){
             provinceList.remove((ProvinceItem) item);
-            notifyDataSetChanged();
             dropPosition = -1;
+            notifyDataSetChanged();
         }
     }
 
@@ -141,6 +164,7 @@ public class DragAdapter extends BaseDragAdapter {
         if (null != listener){
             listener.exchangeOtherAdapter(provinceList,position);
         }
+        notifyDataSetChanged();
     }
 
     private changeListener listener;
@@ -156,5 +180,9 @@ public class DragAdapter extends BaseDragAdapter {
         public void setCurrentPosition();
     }
 
+    private class ViewHolder{
+        private View view;
+        private TextView textView;
+    }
 
 }

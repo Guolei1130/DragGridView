@@ -271,33 +271,33 @@ public class DragGridView extends GridView {
             }
         });
 
-        setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.e("tag", "this is position->" + position);
-                ViewGroup dragViewGroup = (ViewGroup) getChildAt(position - getFirstVisiblePosition());
-                itemHeight = dragViewGroup.getHeight();
-                itemWidth = dragViewGroup.getWidth();
-                ViewGroup item = (ViewGroup) getChildAt(position);
-                item.setVisibility(View.INVISIBLE);
-                final int last = getAdapter().getCount()-1;
-                final int position_li = position;
-                mExplosionField.explode(dragViewGroup);
-                mExplosionField.setFinishLIstener(new ExplosionField.OnFinshListener() {
-                    @Override
-                    public void finish() {
-                        if (position_li == last) {
-
-                            ((BaseDragAdapter) getAdapter()).removePosition(position_li);
-
-                            return;
-                        }
-                        back(position_li);
-                    }
-                });
-
-            }
-        });
+//        setOnItemClickListener(new OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Log.e("tag", "this is position->" + position);
+//                ViewGroup dragViewGroup = (ViewGroup) getChildAt(position - getFirstVisiblePosition());
+//                itemHeight = dragViewGroup.getHeight();
+//                itemWidth = dragViewGroup.getWidth();
+//                ViewGroup item = (ViewGroup) getChildAt(position);
+//                item.setVisibility(View.INVISIBLE);
+//                final int last = getAdapter().getCount()-1;
+//                final int position_li = position;
+//                mExplosionField.explode(dragViewGroup);
+//                mExplosionField.setFinishLIstener(new ExplosionField.OnFinshListener() {
+//                    @Override
+//                    public void finish() {
+//                        if (position_li == last) {
+//
+//                            ((BaseDragAdapter) getAdapter()).removePosition(position_li);
+//
+//                            return;
+//                        }
+//                        back(position_li);
+//                    }
+//                });
+//
+//            }
+//        });
     }
 
     private void back(final int position) {
