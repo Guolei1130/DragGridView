@@ -35,6 +35,8 @@ public class DragAdapter extends BaseDragAdapter {
     private SharedPreferences.Editor mEditor;
     private ProvinceItem selectItem;
 
+    private int mHidePosition = -1;
+
     public DragAdapter(Context context,List<ProvinceItem> provinceList){
         this.context = context;
         this.provinceList = provinceList;
@@ -81,7 +83,7 @@ public class DragAdapter extends BaseDragAdapter {
         }
 
         return view;
-//        ViewHolder holder ;
+//        final ViewHolder holder ;
 //        if (null == convertView){
 //            convertView = LayoutInflater.from(context).inflate(R.layout.item,parent,false);
 //            holder = new ViewHolder();
@@ -92,8 +94,10 @@ public class DragAdapter extends BaseDragAdapter {
 //        }
 //        final ProvinceItem item = provinceList.get(position);
 //        holder.textView.setText(item.getName()+"");
-//        if (dropPosition == position){
+//        if (mHidePosition == position){
 //            convertView.setVisibility(View.INVISIBLE);
+//        }else {
+//            convertView.setVisibility(View.VISIBLE);
 //        }
 //        if (selectItem.getId() == provinceList.get(position).getId()){
 //            convertView.setBackgroundColor(Color.parseColor("#fbfbfb"));
@@ -102,8 +106,6 @@ public class DragAdapter extends BaseDragAdapter {
 //            convertView.setBackgroundColor(Color.parseColor("#ffffff"));
 //            holder.textView.setTextColor(Color.parseColor("#464646"));
 //        }
-//
-//        Log.e(TAG, "getView: " + position + "dropPosition " + dropPosition + "visiable :"+convertView.getVisibility());
 //        return convertView;
     }
 
@@ -125,6 +127,8 @@ public class DragAdapter extends BaseDragAdapter {
             provinceList.add(dropPosition, dragItem);
             provinceList.remove(dragPosition + 1);
         }
+        this.mHidePosition = dropPosition;
+
         mEditor.putString(Constant.PROVINCE, ListToJson.toJson(provinceList).toString());
         mEditor.commit();
         notifyDataSetChanged();
@@ -164,6 +168,7 @@ public class DragAdapter extends BaseDragAdapter {
         if (null != listener){
             listener.exchangeOtherAdapter(provinceList,position);
         }
+        this.mHidePosition = -1 ;
         notifyDataSetChanged();
     }
 
@@ -185,4 +190,15 @@ public class DragAdapter extends BaseDragAdapter {
         private TextView textView;
     }
 
+    @Override
+    public void hidePosition(int position) {
+        this.mHidePosition = position;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void showAll() {
+        this.mHidePosition = -1;
+        notifyDataSetChanged();
+    }
 }

@@ -2,6 +2,7 @@ package com.gl.draggridview;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -30,6 +31,17 @@ import com.gl.tools.Util;
  * Created by GeekZoo on 2016/3/10.
  */
 public class DragGridView extends GridView {
+
+    private static final String TAG = DragGridView.class.getSimpleName();
+
+    private static final int DEFAULT_COLUMNS = 0 ;
+    private static final double DEFAULT_SCALE = 1.2 ;
+    private static final int DEFAULT_DRAG_BG_COLOR = Color.parseColor("#f5f5f5");
+    private static final int DEFAULT_FIXED_NUMS = 2 ;
+    private int mColumns ;
+    private double mDragScale ;
+    private int mDragColor;
+    private int mFixed_nums;
 
     private ExplosionField mExplosionField;
 
@@ -71,20 +83,12 @@ public class DragGridView extends GridView {
      * 拖动时候对应的VIEW
      **/
     private View dragImageView = null;
-    /**
-     * 长按ITEM出现的View
-     **/
-    private ViewGroup dragItemView = null;
 
     private WindowManager windowManager = null;
     private WindowManager.LayoutParams windowParams = null;
 
-    private int itemTotalCount;
-    private int mColumns = 4;
 
-    private int mRows;
     private int holdPosition;
-    private double dragScale = 1.2D;
     private Vibrator mVibrator;
 
     private int mHorizontalSpacing = 1;
@@ -96,7 +100,8 @@ public class DragGridView extends GridView {
 
     private boolean isMoving = false;
 
-    private int defaultDragBgColor = Color.parseColor("#f5f5f5");
+    private ViewGroup dragViewGroup;
+
 
     public DragGridView(Context context) {
         this(context, null);
@@ -109,7 +114,17 @@ public class DragGridView extends GridView {
     public DragGridView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
+        TypedArray a = context.obtainStyledAttributes(attrs,R.styleable.DragGridView,defStyleAttr,0);
+        mColumns = a.getInt(R.styleable.DragGridView_columnscount,DEFAULT_COLUMNS);
+        if (mColumns <= 2){
+            throw new IllegalAccessError("you need set columnscount or columnscount should > 2");
+        }
+        mDragScale = (double) a.getFloat(R.styleable.DragGridView_scale_num, (float) DEFAULT_SCALE);
+        mDragColor = a.getColor(R.styleable.DragGridView_item_background_color,DEFAULT_DRAG_BG_COLOR);
+        mFixed_nums = a.getInt(R.styleable.DragGridView_fixed_num,DEFAULT_FIXED_NUMS);
+        a.recycle();
     }
+
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
@@ -147,7 +162,6 @@ public class DragGridView extends GridView {
             windowY = (int) ev.getY();
             setOnItemClickListener(ev);
         }
-
         return super.onInterceptTouchEvent(ev);
     }
 
@@ -182,6 +196,7 @@ public class DragGridView extends GridView {
                     stopDrag();
                     onDrop(x, y);
                     ((BaseDragAdapter)getAdapter()).dragEnd();
+                    ((BaseDragAdapter)getAdapter()).showAll();
                     requestDisallowInterceptTouchEvent(false);
                     break;
                 default:
@@ -190,7 +205,6 @@ public class DragGridView extends GridView {
 
             }
         }
-
         return super.onTouchEvent(ev);
     }
 
@@ -234,25 +248,20 @@ public class DragGridView extends GridView {
                 if (startPosition <= 1) {
                     return false;
                 }
-                ViewGroup dragViewGroup = (ViewGroup) getChildAt(dragPosition - getFirstVisiblePosition());
+                dragViewGroup = (ViewGroup) getChildAt(dragPosition - getFirstVisiblePosition());
                 TextView dragTextView = (TextView) dragViewGroup.findViewById(R.id.title);
                 dragTextView.setSelected(true);
                 dragTextView.setEnabled(false);
                 itemHeight = dragViewGroup.getHeight();
                 itemWidth = dragViewGroup.getWidth();
-                itemTotalCount = DragGridView.this.getCount();
-                int row = itemTotalCount / mColumns;// 算出行数
-                mRows = itemTotalCount % mColumns > 0 ? itemTotalCount / mColumns : itemTotalCount / mColumns + 1;
-                // 如果特殊的这个不等于拖动的那个，并且不等于-1
                 if (dragPosition != AdapterView.INVALID_POSITION) {
                     win_view_x = windowX - dragViewGroup.getLeft();//VIEW相对自己的X，半斤
                     win_view_y = windowY - dragViewGroup.getTop();//VIEW相对自己的y，半斤
                     dragOffsetX = (int) (ev.getRawX() - x);//手指在屏幕的上X位置-手指在控件中的位置就是距离最左边的距离
                     dragOffsetY = (int) (ev.getRawY() - y);//手指在屏幕的上y位置-手指在控件中的位置就是距离最上边的距离
-                    dragItemView = dragViewGroup;
                     dragViewGroup.destroyDrawingCache();
                     dragViewGroup.setDrawingCacheEnabled(true);
-                    dragViewGroup.setBackgroundColor(defaultDragBgColor);
+                    dragViewGroup.setBackgroundColor(mDragColor);
                     Bitmap dragBitmap = Bitmap.createBitmap(dragViewGroup.getDrawingCache());
                     mVibrator.vibrate(50);//设置震动时间
                     startDrag(dragBitmap, (int) ev.getRawX(), (int) ev.getRawY());
@@ -260,7 +269,8 @@ public class DragGridView extends GridView {
                      * 若用DragAdapter 则将下面这行注释取消
                      */
                     //hideDropItem();
-                    dragViewGroup.setVisibility(View.INVISIBLE);
+//                    dragViewGroup.setVisibility(View.INVISIBLE);
+                    ((BaseDragAdapter)getAdapter()).hidePosition(position);
                     isMoving = false;
 
                     requestDisallowInterceptTouchEvent(true);
@@ -271,6 +281,12 @@ public class DragGridView extends GridView {
             }
         });
 
+        setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.e(TAG, "onItemClick: " + (view.getVisibility() == View.VISIBLE) );
+            }
+        });
 //        setOnItemClickListener(new OnItemClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -309,9 +325,9 @@ public class DragGridView extends GridView {
         Log.e("tag", "这是  啊---》" + x_vlaue + ";" + y_vlaue);
         int count = getAdapter().getCount();
         for (int i = position +1 ; i < count ; i++) {
-            if (i  % 4 == 0){
+            if (i  % mColumns == 0){
                 //
-                to_x = x_vlaue * 3;
+                to_x = x_vlaue * (mColumns-1);
                 to_y = -y_vlaue;
             }else {
                 to_x = -x_vlaue;
@@ -356,7 +372,7 @@ public class DragGridView extends GridView {
         // 拖动的VIEW下方的POSITION
         int dPosition = pointToPosition(x, y);
         // 判断下方的POSITION是否是最开始2个不能拖动的
-        if (dPosition > 1) {
+        if (dPosition > mFixed_nums - 1) {
             if ((dPosition == -1) || (dPosition == dragPosition)) {
                 return;
             }
@@ -377,8 +393,8 @@ public class DragGridView extends GridView {
 
             if (dPosition != dragPosition) {
                 //dragGroup设置为不可见
-                ViewGroup dragGroup = (ViewGroup) getChildAt(dragPosition);
-                dragGroup.setVisibility(View.INVISIBLE);
+//                ViewGroup dragGroup = (ViewGroup) getChildAt(dragPosition);
+//                dragViewGroup.setVisibility(View.INVISIBLE);
                 float to_x = 1;// 当前下方positon
                 float to_y;// 当前下方右边positon
                 //x_vlaue移动的距离百分比（相对于自己长度的百分比）
@@ -396,8 +412,8 @@ public class DragGridView extends GridView {
                         if (dragPosition / mColumns == holdPosition / mColumns) {
                             to_x = -x_vlaue;
                             to_y = 0;
-                        } else if (holdPosition % 4 == 0) {
-                            to_x = 3 * x_vlaue;
+                        } else if (holdPosition % mColumns == 0) {
+                            to_x = (mColumns-1) * x_vlaue;
                             to_y = -y_vlaue;
                         } else {
                             to_x = -x_vlaue;
@@ -409,8 +425,8 @@ public class DragGridView extends GridView {
                         if (dragPosition / mColumns == holdPosition / mColumns) {
                             to_x = x_vlaue;
                             to_y = 0;
-                        } else if ((holdPosition + 1) % 4 == 0) {
-                            to_x = -3 * x_vlaue;
+                        } else if ((holdPosition + 1) % mColumns == 0) {
+                            to_x = -(mColumns-1) * x_vlaue;
                             to_y = y_vlaue;
                         } else {
                             to_x = x_vlaue;
@@ -418,7 +434,9 @@ public class DragGridView extends GridView {
                         }
                     }
                     ViewGroup moveViewGroup = (ViewGroup) getChildAt(holdPosition);
+
                     Animation moveAnimation = getMoveAnimation(to_x, to_y);
+
                     moveViewGroup.startAnimation(moveAnimation);
                     //如果是最后一个移动的，那么设置他的最后个动画ID为LastAnimationID
                     if (holdPosition == endPosition) {
@@ -468,8 +486,8 @@ public class DragGridView extends GridView {
         windowParams.gravity = Gravity.TOP | Gravity.LEFT;
         windowParams.x = x - win_view_x;
         windowParams.y = y - win_view_y;
-        windowParams.width = (int) (dragScale * dragBitmap.getWidth());// 放大dragScale倍，可以设置拖动后的倍数
-        windowParams.height = (int) (dragScale * dragBitmap.getHeight());// 放大dragScale倍，可以设置拖动后的倍数
+        windowParams.width = (int) (mDragScale * dragBitmap.getWidth());// 放大dragScale倍，可以设置拖动后的倍数
+        windowParams.height = (int) (mDragScale * dragBitmap.getHeight());// 放大dragScale倍，可以设置拖动后的倍数
         this.windowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
                 | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -481,7 +499,6 @@ public class DragGridView extends GridView {
         windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);// "window"
         windowManager.addView(iv, windowParams);
         dragImageView = iv;
-
     }
 
     @Override

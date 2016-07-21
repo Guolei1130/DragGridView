@@ -2,7 +2,6 @@ package com.gl;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -20,6 +19,7 @@ import java.util.List;
 
 public class MainActivity extends Activity implements changeListener{
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     private DragGridView gridView;
 
     private List<ProvinceItem> items = new ArrayList<ProvinceItem>();

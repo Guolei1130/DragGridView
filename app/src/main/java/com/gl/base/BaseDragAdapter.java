@@ -1,9 +1,6 @@
 package com.gl.base;
 
-import android.support.annotation.Nullable;
 import android.widget.BaseAdapter;
-
-import java.util.List;
 
 /**
  * Created by guolei on 16-3-14.
@@ -20,4 +17,6 @@ public abstract class BaseDragAdapter extends BaseAdapter{
     public abstract void removeItem(BaseItem item);
     public abstract void removePosition(int position);
     public abstract void dragEnd();
+    public abstract void hidePosition(int position);
+    public abstract void showAll();
 }

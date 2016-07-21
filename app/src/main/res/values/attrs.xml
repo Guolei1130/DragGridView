@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DragGridView">
+        <attr name="div_color" format="color" />
+        <attr name="item_background_color" format="color"/>
+        <attr name="columnscount" format="integer"/>
+        <attr name="scale_num" format="float"/>
+        <attr name="fixed_num" format="integer"/>
+    </declare-styleable>
+</resources>
