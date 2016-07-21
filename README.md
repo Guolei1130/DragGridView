@@ -2,6 +2,8 @@
 拖拽排序GridView,支持本地记录,对代码进行了封装，可直接使用。
 
 
+### 强烈建议使用RecyclerView去实现，GridView实现有一些问题
+
 # 效果图  由于是模拟器，效果差了点，但是将就着看吧
 ![啦啦啦啦](https://github.com/Guolei1130/DragGridView/blob/master/GIF.gif "Optional title")
 
